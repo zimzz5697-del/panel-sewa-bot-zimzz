@@ -8,7 +8,7 @@ export const NOMOR_WA = "6282279073719";
 // Link Gambar QRIS
 export const URL_QRIS = "https://cdn.phototourl.com/member/2026-10-26-90591836-c725-42bc-9b87-05e37274733e.jpg"; 
 
-// Link Video Background
+// Link Video Background (Ganti jika perlu)
 export const URL_VIDEO_BACKGROUND = "https://videotourl.com/videos/1793976037471-dae5d028-16ab-4a54-a86b-4011c69b6b11.mp4"; 
 
 
