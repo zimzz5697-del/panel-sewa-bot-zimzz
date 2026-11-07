@@ -2,72 +2,85 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <!-- Meta viewport untuk HP agar pas 1:1 dengan layar -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
   <title>Toko Panel & Sewa Bot</title>
   <style>
     * { box-sizing: border-box; }
     
-    /* --- STYLING UNTUK VIDEO BACKGROUND --- */
+    /* --- VIDEO BACKGROUND FULL SCREEN --- */
     #bg-video {
       position: fixed;
-      right: 0;
-      bottom: 0;
-      min-width: 100%;
-      min-height: 100%;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
       z-index: -2;
       object-fit: cover;
+      pointer-events: none;
     }
-    /* Lapisan hitam transparan agar teks putih tetap terbaca */
+    
+    /* Overlay dibuat bening (hitam 30%) agar video lebih terang */
     .overlay-bg {
       position: fixed;
       top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.5); 
+      width: 100vw; height: 100vh;
+      background: rgba(0, 0, 0, 0.3); 
       z-index: -1;
+      pointer-events: none;
     }
 
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: transparent; margin: 0; padding: 20px; color: #fff; position: relative; }
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      background: transparent; 
+      margin: 0; 
+      padding: 20px; 
+      color: #fff; 
+      position: relative; 
+      min-height: 100vh;
+      overflow-x: hidden; 
+    }
     
-    /* Header */
     header { display: flex; justify-content: center; align-items: center; max-width: 900px; margin: 0 auto 20px; flex-wrap: wrap; gap: 10px; text-align: center; }
-    header h1 { font-size: 28px; margin: 0; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    header h1 { font-size: 24px; margin: 0; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,1); }
     
     .container { max-width: 900px; margin: 0 auto; }
-    h2 { margin-top: 30px; border-bottom: 2px solid rgba(255,255,255,0.3); padding-bottom: 8px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+    h2 { margin-top: 30px; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 8px; color: #fff; text-shadow: 0 2px 6px rgba(0,0,0,1); font-size: 20px; }
     
-    /* Grid Produk */
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
     
-    /* Kartu Produk Super Tembus Pandang */
+    /* Kartu Produk SANGAT TEMBUS PANDANG */
     .card { 
-      background: rgba(255, 255, 255, 0.15); 
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(3px); 
+      background: rgba(255, 255, 255, 0.05); 
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(1px); 
       border-radius: 10px; 
       padding: 16px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
       display: flex; 
       flex-direction: column; 
       justify-content: space-between; 
-      transition: transform 0.2s; 
+      transition: all 0.2s; 
       position: relative; 
       overflow: hidden; 
     }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.5); background: rgba(255, 255, 255, 0.25); }
-    .card h3 { margin: 0 0 6px; font-size: 16px; padding-right: 50px; color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+    .card:hover { 
+      transform: translateY(-3px); 
+      background: rgba(255, 255, 255, 0.15); 
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4); 
+    }
+    .card h3 { margin: 0 0 6px; font-size: 16px; padding-right: 50px; color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,1); }
     
-    /* Harga & Diskon */
     .harga-container { margin-bottom: 12px; }
-    .harga-asli { color: #ddd; text-decoration: line-through; font-size: 13px; margin-bottom: 2px; display: block; text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
-    .harga { color: #4dabf7; font-weight: bold; font-size: 20px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,0.9); }
-    .harga.diskon { color: #ff6b6b; }
+    .harga-asli { color: #ccc; text-decoration: line-through; font-size: 13px; margin-bottom: 2px; display: block; text-shadow: 0 1px 3px rgba(0,0,0,1); }
+    .harga { color: #74c0fc; font-weight: bold; font-size: 20px; display: block; text-shadow: 0 2px 5px rgba(0,0,0,1); }
+    .harga.diskon { color: #ff8787; }
     
-    /* Label Diskon */
-    .badge-diskon { position: absolute; top: 10px; right: -30px; background: rgba(217, 48, 37, 0.9); color: #fff; font-size: 11px; font-weight: bold; padding: 4px 30px; transform: rotate(45deg); box-shadow: 0 2px 5px rgba(0,0,0,0.4); text-align: center; width: 120px; }
+    .badge-diskon { position: absolute; top: 10px; right: -30px; background: rgba(217, 48, 37, 0.8); color: #fff; font-size: 11px; font-weight: bold; padding: 4px 30px; transform: rotate(45deg); box-shadow: 0 2px 5px rgba(0,0,0,0.3); text-align: center; width: 120px; }
     
-    /* Tombol WA Super Tembus Pandang */
+    /* Tombol WA SANGAT TEMBUS PANDANG */
     .wa { 
-      background: rgba(37, 211, 102, 0.4); 
+      background: rgba(37, 211, 102, 0.15); 
       color: #fff; 
       text-decoration: none; 
       text-align: center; 
@@ -77,42 +90,78 @@
       font-weight: bold; 
       display: block; 
       transition: 0.3s; 
-      border: 1px solid rgba(255,255,255,0.4);
-      backdrop-filter: blur(2px);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      border: 1px solid rgba(37, 211, 102, 0.5);
+      backdrop-filter: blur(1px);
+      text-shadow: 0 1px 3px rgba(0,0,0,1);
     }
     .wa:hover { background: rgba(37, 211, 102, 0.8); }
     
-    /* Area QRIS & Pembayaran Super Tembus Pandang */
+    /* Kotak Pembayaran SANGAT TEMBUS PANDANG */
     .pembayaran-box { 
-      background: rgba(255, 255, 255, 0.1); 
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      backdrop-filter: blur(3px);
+      background: rgba(255, 255, 255, 0.03); 
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(1px);
       border-radius: 12px; 
       padding: 24px; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3); 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2); 
       margin-top: 20px; 
       text-align: center; 
     }
     
-    /* Disclaimer */
-    .disclaimer-1 { background: rgba(252, 232, 230, 0.85); color: #c5221f; border: 1px solid #fad2cf; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: left; font-size: 14px; line-height: 1.5; font-weight: bold; }
-    .disclaimer-2 { background: rgba(255, 243, 205, 0.85); color: #856404; border: 1px solid #ffeeba; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 14px; line-height: 1.5; }
-    .disclaimer-2 strong { color: #d93025; }
+    /* ========================================= */
+    /* DISCLAIMER TRANSPARAN TANPA KOTAK         */
+    /* ========================================= */
+    .disclaimer-1 { 
+      background: transparent; 
+      color: #ff6b6b; 
+      border: none; 
+      padding: 0; 
+      margin-bottom: 15px; 
+      text-align: center; 
+      font-size: 15px; 
+      line-height: 1.5; 
+      font-weight: bold; 
+      text-shadow: 0 1px 4px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8); 
+    }
+    .disclaimer-2 { 
+      background: transparent; 
+      color: #ffd43b; 
+      border: none; 
+      padding: 0; 
+      margin-bottom: 20px; 
+      text-align: center; 
+      font-size: 14px; 
+      line-height: 1.6; 
+      text-shadow: 0 1px 4px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8); 
+    }
+    .disclaimer-2 strong { color: #ff8787; }
     
-    /* Animasi QRIS */
-    .qris-container { width: 250px; height: 250px; margin: 0 auto 20px; position: relative; background: rgba(255, 255, 255, 0.2); border-radius: 10px; border: 2px dashed rgba(255,255,255,0.5); display: flex; justify-content: center; align-items: center; overflow: hidden; backdrop-filter: blur(2px); }
+    .qris-container { 
+      width: 250px; 
+      height: 250px; 
+      max-width: 100%; 
+      margin: 0 auto 20px; 
+      position: relative; 
+      background: rgba(255, 255, 255, 0.05); 
+      border-radius: 10px; 
+      border: 2px dashed rgba(255,255,255,0.3); 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      overflow: hidden; 
+      backdrop-filter: blur(1px); 
+    }
     .qris-img { width: 100%; height: 100%; object-fit: contain; display: none; }
     
     .loader { display: none; flex-direction: column; align-items: center; justify-content: center; }
-    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.3); border-top: 4px solid #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
+    .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,255,255,0.2); border-top: 4px solid #fff; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 10px; }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     
-    /* Tombol Generate QRIS Super Tembus Pandang */
+    /* Tombol Generate SANGAT TEMBUS PANDANG */
     .btn-generate { 
-      background: rgba(26, 115, 232, 0.4); 
+      background: rgba(26, 115, 232, 0.15); 
       color: #fff; 
-      border: 1px solid rgba(255,255,255,0.4); 
+      border: 1px solid rgba(26, 115, 232, 0.5); 
       padding: 12px 24px; 
       border-radius: 8px; 
       font-size: 16px; 
@@ -121,22 +170,44 @@
       transition: 0.3s; 
       width: 100%; 
       max-width: 300px; 
-      backdrop-filter: blur(2px);
-      text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+      backdrop-filter: blur(1px);
+      text-shadow: 0 1px 3px rgba(0,0,0,1);
     }
     .btn-generate:hover { background: rgba(26, 115, 232, 0.8); }
-    .btn-generate:disabled { background: rgba(100, 100, 100, 0.4); cursor: not-allowed; }
+    .btn-generate:disabled { background: rgba(100, 100, 100, 0.3); cursor: not-allowed; }
     
     .qris-actions { display: none; margin-top: 15px; }
-    
-    /* Warna teks loader disesuaikan */
-    #loader span { color: #fff !important; text-shadow: 0 1px 2px #000; }
+    #loader span { color: #fff !important; text-shadow: 0 1px 3px #000; }
+
+    /* ========================================= */
+    /* TAMBAHAN KHUSUS UNTUK LAYAR HP (ANDROID)  */
+    /* ========================================= */
+    @media (max-width: 600px) {
+      body { padding: 15px; }
+      header h1 { font-size: 20px; }
+      h2 { font-size: 18px; margin-top: 25px; }
+      
+      /* Grid jadi 1 kolom di HP agar tombol lebih besar dan mudah ditekan */
+      .grid { grid-template-columns: 1fr; gap: 12px; }
+      
+      .card { padding: 14px; }
+      .card h3 { font-size: 15px; }
+      .harga { font-size: 18px; }
+      
+      .pembayaran-box { padding: 16px; }
+      
+      /* QRIS menyesuaikan lebar layar HP */
+      .qris-container { width: 200px; height: 200px; }
+      
+      .disclaimer-1 { font-size: 13px; }
+      .disclaimer-2 { font-size: 12px; }
+    }
   </style>
 </head>
 <body>
 
   <!-- ============================================== -->
-  <!-- ⚠️ VIDEO BACKGROUND ⚠️ -->
+  <!-- ⚠️ VIDEO BACKGROUND FULL SCREEN ⚠️ -->
   <!-- ============================================== -->
   <video autoplay loop muted playsinline id="bg-video">
     <source src="https://videotourl.com/videos/1793976037471-dae5d028-16ab-4a54-a86b-4011c69b6b11.mp4" type="video/mp4" />
@@ -155,25 +226,25 @@
     <div class="pembayaran-box">
       <h2 style="margin-top:0; border:none; color: #fff;">💳 Pembayaran via QRIS</h2>
       
-      <!-- DISCLAIMER BARU: Hubungi Admin Sebelum Order -->
+      <!-- DISCLAIMER BARU (TANPA KOTAK) -->
       <div class="disclaimer-1">
-        📢 <b>PENTING:</b> Silakan hubungi Admin terlebih dahulu untuk memastikan <b>ketersediaan stok</b> sebelum melakukan pembayaran/transfer!
+        📢 PENTING: Silakan hubungi Admin terlebih dahulu untuk memastikan ketersediaan stok sebelum melakukan pembayaran/transfer!
       </div>
 
-      <!-- DISCLAIMER LAMA -->
+      <!-- DISCLAIMER LAMA (TANPA KOTAK) -->
       <div class="disclaimer-2">
-        <strong>⚠️ DISCLAIMER PEMBAYARAN:</strong><br/>
-        1. Lakukan transfer <b>sesuai harga</b> yang tertera.<br/>
-        2. <b>WAJIB</b> screenshot / foto bukti transfer.<br/>
+        ⚠️ DISCLAIMER PEMBAYARAN:<br/>
+        1. Lakukan transfer sesuai harga yang tertera.<br/>
+        2. WAJIB screenshot / foto bukti transfer.<br/>
         3. Kirimkan bukti transfer tersebut ke Admin via WhatsApp.<br/>
-        4. Pesanan akan diproses <b>SETELAH</b> Admin memverifikasi bukti transfer.
+        4. Pesanan akan diproses SETELAH Admin memverifikasi bukti transfer.
       </div>
 
       <div class="qris-container" id="qrisContainer">
         <!-- Loading Animation -->
         <div class="loader" id="loader">
           <div class="spinner"></div>
-          <span style="font-size:14px; color:#fff; text-shadow: 0 1px 2px #000;">Menyiapkan QRIS...</span>
+          <span style="font-size:14px; color:#fff; text-shadow: 0 1px 3px #000;">Menyiapkan QRIS...</span>
         </div>
         <!-- Gambar QRIS -->
         <img src="" alt="QRIS" class="qris-img" id="qrisImg" />
@@ -182,7 +253,7 @@
       <button class="btn-generate" id="btnGenerate">Generate QRIS</button>
 
       <div class="qris-actions" id="qrisActions">
-        <p style="color: #ff6b6b; font-weight: bold; font-size: 14px; margin-bottom: 10px; text-shadow: 0 1px 2px #000;">Sudah transfer? Kirim bukti ke Admin:</p>
+        <p style="color: #ff8787; font-weight: bold; font-size: 14px; margin-bottom: 10px; text-shadow: 0 1px 3px #000;">Sudah transfer? Kirim bukti ke Admin:</p>
         <a href="#" id="btnKonfirmasi" class="wa" target="_blank" rel="noopener" style="display:inline-block; padding: 12px 30px; width: auto;">📤 Kirim Bukti Transfer via WhatsApp</a>
       </div>
     </div>
